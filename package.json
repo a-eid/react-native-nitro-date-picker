@@ -1,0 +1,12 @@
+{
+  "name": "react-native-nitro-date-picker-root",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "example"
+  ],
+  "scripts": {
+    "specs": "bun --cwd packages/react-native-nitro-date-picker run specs",
+    "example": "bun --cwd example"
+  }
+}
