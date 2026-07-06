@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TimePicker
 import androidx.annotation.Keep
 import com.facebook.proguard.annotations.DoNotStrip
-import com.margelo.nitro.core.NitroModules
+import com.margelo.nitro.NitroModules
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -200,8 +200,8 @@ class HybridNitroDatePicker : HybridNitroDatePickerSpec() {
         } else {
           Locale.getDefault()
         }
-        val sdf = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, locale)
-        !sdf.toPattern().contains("a")
+        val sdf = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, locale) as SimpleDateFormat
+        sdf.toPattern().contains("a").not()
       }
       else -> android.text.format.DateFormat.is24HourFormat(
         NitroModules.applicationContext
