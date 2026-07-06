@@ -81,3 +81,5 @@ lib/
 .eslintcache
 .cache
 *.tsbuildinfo
+example.app/
+build-*.tar.gz
