@@ -1,35 +1,35 @@
 {
-	"expo": {
-		"name": "react-native-nitro-date-picker-example",
-		"slug": "react-native-nitro-date-picker-example",
-		"version": "1.0.0",
-		"orientation": "portrait",
-		"icon": "./assets/icon.png",
-		"userInterfaceStyle": "auto",
-		"ios": {
-			"supportsTablet": true,
-			"bundleIdentifier": "com.aeid.reactNativeNitroDatePickerExample",
-			"infoPlist": {
-				"ITSAppUsesNonExemptEncryption": false
-			}
-		},
-		"android": {
-			"adaptiveIcon": {
-				"backgroundColor": "#E6F4FE",
-				"foregroundImage": "./assets/android-icon-foreground.png",
-				"backgroundImage": "./assets/android-icon-background.png",
-				"monochromeImage": "./assets/android-icon-monochrome.png"
-			},
-			"predictiveBackGestureEnabled": false,
-			"package": "com.aeid.example"
-		},
-		"web": {
-			"favicon": "./assets/favicon.png"
-		},
-		"extra": {
-			"eas": {
-				"projectId": "922f7a5e-a1ef-4b9f-9759-bfb19592f08d"
-			}
-		}
-	}
+  "expo": {
+    "name": "react-native-nitro-date-picker-example",
+    "slug": "react-native-nitro-date-picker-example",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "auto",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aeid.reactNativeNitroDatePickerExample",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.aeid.reactNativeNitroDatePickerExample"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c7e81542-ad0f-4027-b2f3-e27aff020c1e"
+      }
+    }
+  }
 }

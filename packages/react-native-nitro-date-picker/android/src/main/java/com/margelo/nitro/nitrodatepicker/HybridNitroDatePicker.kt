@@ -32,11 +32,14 @@ class HybridNitroDatePicker : HybridNitroDatePickerSpec() {
       timeInMillis = config.date.toLong()
     }
 
-    val context = NitroModules.applicationContext
+    val reactContext = NitroModules.applicationContext
       ?: throw IllegalStateException("ApplicationContext is not available")
 
     Handler(Looper.getMainLooper()).post {
-      val builder = AlertDialog.Builder(context)
+      val activity = reactContext.currentActivity
+        ?: throw IllegalStateException("No current Activity — cannot show dialog")
+
+      val builder = AlertDialog.Builder(activity)
 
       val title = config.title
         ?: when (config.mode) {
@@ -47,9 +50,9 @@ class HybridNitroDatePicker : HybridNitroDatePickerSpec() {
       builder.setTitle(title)
 
       when (config.mode) {
-        DatePickerMode.TIME -> setupTimePicker(config, builder, context)
-        DatePickerMode.DATE -> setupDatePicker(config, builder, context)
-        DatePickerMode.DATETIME -> setupDateTimePicker(config, builder, context)
+        DatePickerMode.TIME -> setupTimePicker(config, builder, activity)
+        DatePickerMode.DATE -> setupDatePicker(config, builder, activity)
+        DatePickerMode.DATETIME -> setupDateTimePicker(config, builder, activity)
       }
 
       builder.setPositiveButton(config.confirmText ?: "Confirm") { _, _ ->
