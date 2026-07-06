@@ -1,0 +1,24 @@
+{
+  "$schema": "https://nitro.margelo.com/nitro.schema.json",
+  "cxxNamespace": ["nitrodatepicker"],
+  "ios": {
+    "iosModuleName": "NitroDatePicker"
+  },
+  "android": {
+    "androidNamespace": ["nitrodatepicker"],
+    "androidCxxLibName": "NitroDatePicker"
+  },
+  "autolinking": {
+    "NitroDatePicker": {
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridNitroDatePicker"
+      },
+      "android": {
+        "language": "kotlin",
+        "implementationClassName": "HybridNitroDatePicker"
+      }
+    }
+  },
+  "ignorePaths": ["**/node_modules"]
+}
