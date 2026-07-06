@@ -83,3 +83,13 @@ lib/
 *.tsbuildinfo
 example.app/
 build-*.tar.gz
+
+# build artifacts
+*.apk
+*.aab
+*.ipa
+*.app
+*.tar.gz
+*.tgz
+build-*
+*.dSYM

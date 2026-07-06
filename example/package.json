@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "react-native-nitro-date-picker-example",
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {

@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "specs": "bun --cwd packages/react-native-nitro-date-picker run specs",
-    "example": "bun --cwd example"
+    "example": "bun --cwd example",
+    "publish": "cd packages/react-native-nitro-date-picker && npm publish --access public"
   }
 }
