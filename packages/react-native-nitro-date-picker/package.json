@@ -1,6 +1,6 @@
 {
   "name": "react-native-nitro-date-picker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A fast, minimal, type-safe date picker for React Native built with Nitro Modules",
   "main": "lib/index",
   "module": "lib/index",
