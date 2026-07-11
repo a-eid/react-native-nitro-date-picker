@@ -93,3 +93,6 @@ build-*.tar.gz
 *.tgz
 build-*
 *.dSYM
+
+# CommandCode (agent taste/profile)
+.commandcode/
