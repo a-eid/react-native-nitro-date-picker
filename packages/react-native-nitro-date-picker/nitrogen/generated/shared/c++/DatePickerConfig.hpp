@@ -32,6 +32,8 @@
 namespace margelo::nitro::nitrodatepicker { enum class DatePickerMode; }
 // Forward declaration of `DatePickerTheme` to properly resolve imports.
 namespace margelo::nitro::nitrodatepicker { enum class DatePickerTheme; }
+// Forward declaration of `PickerStyle` to properly resolve imports.
+namespace margelo::nitro::nitrodatepicker { struct PickerStyle; }
 // Forward declaration of `HourSource` to properly resolve imports.
 namespace margelo::nitro::nitrodatepicker { enum class HourSource; }
 
@@ -39,6 +41,7 @@ namespace margelo::nitro::nitrodatepicker { enum class HourSource; }
 #include <string>
 #include <optional>
 #include "DatePickerTheme.hpp"
+#include "PickerStyle.hpp"
 #include "HourSource.hpp"
 
 namespace margelo::nitro::nitrodatepicker {
@@ -56,9 +59,7 @@ namespace margelo::nitro::nitrodatepicker {
     double minuteInterval     SWIFT_PRIVATE;
     std::optional<double> timeZoneOffsetInMinutes     SWIFT_PRIVATE;
     std::optional<DatePickerTheme> theme     SWIFT_PRIVATE;
-    std::optional<std::string> textColor     SWIFT_PRIVATE;
-    std::optional<std::string> dividerColor     SWIFT_PRIVATE;
-    std::optional<std::string> buttonColor     SWIFT_PRIVATE;
+    std::optional<PickerStyle> style     SWIFT_PRIVATE;
     std::optional<HourSource> is24HourSource     SWIFT_PRIVATE;
     std::optional<std::string> confirmText     SWIFT_PRIVATE;
     std::optional<std::string> cancelText     SWIFT_PRIVATE;
@@ -66,7 +67,7 @@ namespace margelo::nitro::nitrodatepicker {
 
   public:
     DatePickerConfig() = default;
-    explicit DatePickerConfig(double date, DatePickerMode mode, std::optional<std::string> locale, std::optional<double> minimumDate, std::optional<double> maximumDate, double minuteInterval, std::optional<double> timeZoneOffsetInMinutes, std::optional<DatePickerTheme> theme, std::optional<std::string> textColor, std::optional<std::string> dividerColor, std::optional<std::string> buttonColor, std::optional<HourSource> is24HourSource, std::optional<std::string> confirmText, std::optional<std::string> cancelText, std::optional<std::string> title): date(date), mode(mode), locale(locale), minimumDate(minimumDate), maximumDate(maximumDate), minuteInterval(minuteInterval), timeZoneOffsetInMinutes(timeZoneOffsetInMinutes), theme(theme), textColor(textColor), dividerColor(dividerColor), buttonColor(buttonColor), is24HourSource(is24HourSource), confirmText(confirmText), cancelText(cancelText), title(title) {}
+    explicit DatePickerConfig(double date, DatePickerMode mode, std::optional<std::string> locale, std::optional<double> minimumDate, std::optional<double> maximumDate, double minuteInterval, std::optional<double> timeZoneOffsetInMinutes, std::optional<DatePickerTheme> theme, std::optional<PickerStyle> style, std::optional<HourSource> is24HourSource, std::optional<std::string> confirmText, std::optional<std::string> cancelText, std::optional<std::string> title): date(date), mode(mode), locale(locale), minimumDate(minimumDate), maximumDate(maximumDate), minuteInterval(minuteInterval), timeZoneOffsetInMinutes(timeZoneOffsetInMinutes), theme(theme), style(style), is24HourSource(is24HourSource), confirmText(confirmText), cancelText(cancelText), title(title) {}
 
   public:
     friend bool operator==(const DatePickerConfig& lhs, const DatePickerConfig& rhs) = default;
@@ -90,9 +91,7 @@ namespace margelo::nitro {
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "minuteInterval"))),
         JSIConverter<std::optional<double>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "timeZoneOffsetInMinutes"))),
         JSIConverter<std::optional<margelo::nitro::nitrodatepicker::DatePickerTheme>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "theme"))),
-        JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "textColor"))),
-        JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "dividerColor"))),
-        JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "buttonColor"))),
+        JSIConverter<std::optional<margelo::nitro::nitrodatepicker::PickerStyle>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "style"))),
         JSIConverter<std::optional<margelo::nitro::nitrodatepicker::HourSource>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "is24HourSource"))),
         JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "confirmText"))),
         JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cancelText"))),
@@ -109,9 +108,7 @@ namespace margelo::nitro {
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "minuteInterval"), JSIConverter<double>::toJSI(runtime, arg.minuteInterval));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "timeZoneOffsetInMinutes"), JSIConverter<std::optional<double>>::toJSI(runtime, arg.timeZoneOffsetInMinutes));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "theme"), JSIConverter<std::optional<margelo::nitro::nitrodatepicker::DatePickerTheme>>::toJSI(runtime, arg.theme));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "textColor"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.textColor));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "dividerColor"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.dividerColor));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "buttonColor"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.buttonColor));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "style"), JSIConverter<std::optional<margelo::nitro::nitrodatepicker::PickerStyle>>::toJSI(runtime, arg.style));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "is24HourSource"), JSIConverter<std::optional<margelo::nitro::nitrodatepicker::HourSource>>::toJSI(runtime, arg.is24HourSource));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "confirmText"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.confirmText));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "cancelText"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.cancelText));
@@ -134,9 +131,7 @@ namespace margelo::nitro {
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "minuteInterval")))) return false;
       if (!JSIConverter<std::optional<double>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "timeZoneOffsetInMinutes")))) return false;
       if (!JSIConverter<std::optional<margelo::nitro::nitrodatepicker::DatePickerTheme>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "theme")))) return false;
-      if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "textColor")))) return false;
-      if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "dividerColor")))) return false;
-      if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "buttonColor")))) return false;
+      if (!JSIConverter<std::optional<margelo::nitro::nitrodatepicker::PickerStyle>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "style")))) return false;
       if (!JSIConverter<std::optional<margelo::nitro::nitrodatepicker::HourSource>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "is24HourSource")))) return false;
       if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "confirmText")))) return false;
       if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cancelText")))) return false;

@@ -44,13 +44,7 @@ data class DatePickerConfig(
   val theme: DatePickerTheme?,
   @DoNotStrip
   @Keep
-  val textColor: String?,
-  @DoNotStrip
-  @Keep
-  val dividerColor: String?,
-  @DoNotStrip
-  @Keep
-  val buttonColor: String?,
+  val style: PickerStyle?,
   @DoNotStrip
   @Keep
   val is24HourSource: HourSource?,
@@ -77,9 +71,7 @@ data class DatePickerConfig(
       && Objects.deepEquals(this.minuteInterval, other.minuteInterval)
       && Objects.deepEquals(this.timeZoneOffsetInMinutes, other.timeZoneOffsetInMinutes)
       && Objects.deepEquals(this.theme, other.theme)
-      && Objects.deepEquals(this.textColor, other.textColor)
-      && Objects.deepEquals(this.dividerColor, other.dividerColor)
-      && Objects.deepEquals(this.buttonColor, other.buttonColor)
+      && Objects.deepEquals(this.style, other.style)
       && Objects.deepEquals(this.is24HourSource, other.is24HourSource)
       && Objects.deepEquals(this.confirmText, other.confirmText)
       && Objects.deepEquals(this.cancelText, other.cancelText)
@@ -96,9 +88,7 @@ data class DatePickerConfig(
       minuteInterval,
       timeZoneOffsetInMinutes,
       theme,
-      textColor,
-      dividerColor,
-      buttonColor,
+      style,
       is24HourSource,
       confirmText,
       cancelText,
@@ -114,8 +104,8 @@ data class DatePickerConfig(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(date: Double, mode: DatePickerMode, locale: String?, minimumDate: Double?, maximumDate: Double?, minuteInterval: Double, timeZoneOffsetInMinutes: Double?, theme: DatePickerTheme?, textColor: String?, dividerColor: String?, buttonColor: String?, is24HourSource: HourSource?, confirmText: String?, cancelText: String?, title: String?): DatePickerConfig {
-      return DatePickerConfig(date, mode, locale, minimumDate, maximumDate, minuteInterval, timeZoneOffsetInMinutes, theme, textColor, dividerColor, buttonColor, is24HourSource, confirmText, cancelText, title)
+    private fun fromCpp(date: Double, mode: DatePickerMode, locale: String?, minimumDate: Double?, maximumDate: Double?, minuteInterval: Double, timeZoneOffsetInMinutes: Double?, theme: DatePickerTheme?, style: PickerStyle?, is24HourSource: HourSource?, confirmText: String?, cancelText: String?, title: String?): DatePickerConfig {
+      return DatePickerConfig(date, mode, locale, minimumDate, maximumDate, minuteInterval, timeZoneOffsetInMinutes, theme, style, is24HourSource, confirmText, cancelText, title)
     }
   }
 }

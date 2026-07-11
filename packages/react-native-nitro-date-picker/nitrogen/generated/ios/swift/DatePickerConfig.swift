@@ -18,7 +18,7 @@ public extension DatePickerConfig {
   /**
    * Create a new instance of `DatePickerConfig`.
    */
-  init(date: Double, mode: DatePickerMode, locale: String?, minimumDate: Double?, maximumDate: Double?, minuteInterval: Double, timeZoneOffsetInMinutes: Double?, theme: DatePickerTheme?, textColor: String?, dividerColor: String?, buttonColor: String?, is24HourSource: HourSource?, confirmText: String?, cancelText: String?, title: String?) {
+  init(date: Double, mode: DatePickerMode, locale: String?, minimumDate: Double?, maximumDate: Double?, minuteInterval: Double, timeZoneOffsetInMinutes: Double?, theme: DatePickerTheme?, style: PickerStyle?, is24HourSource: HourSource?, confirmText: String?, cancelText: String?, title: String?) {
     self.init(date, mode, { () -> bridge.std__optional_std__string_ in
       if let __unwrappedValue = locale {
         return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
@@ -49,21 +49,9 @@ public extension DatePickerConfig {
       } else {
         return .init()
       }
-    }(), { () -> bridge.std__optional_std__string_ in
-      if let __unwrappedValue = textColor {
-        return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
-      } else {
-        return .init()
-      }
-    }(), { () -> bridge.std__optional_std__string_ in
-      if let __unwrappedValue = dividerColor {
-        return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
-      } else {
-        return .init()
-      }
-    }(), { () -> bridge.std__optional_std__string_ in
-      if let __unwrappedValue = buttonColor {
-        return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
+    }(), { () -> bridge.std__optional_PickerStyle_ in
+      if let __unwrappedValue = style {
+        return bridge.create_std__optional_PickerStyle_(__unwrappedValue)
       } else {
         return .init()
       }
@@ -163,39 +151,8 @@ public extension DatePickerConfig {
   }
   
   @inline(__always)
-  var textColor: String? {
-    return { () -> String? in
-      if bridge.has_value_std__optional_std__string_(self.__textColor) {
-        let __unwrapped = bridge.get_std__optional_std__string_(self.__textColor)
-        return String(__unwrapped)
-      } else {
-        return nil
-      }
-    }()
-  }
-  
-  @inline(__always)
-  var dividerColor: String? {
-    return { () -> String? in
-      if bridge.has_value_std__optional_std__string_(self.__dividerColor) {
-        let __unwrapped = bridge.get_std__optional_std__string_(self.__dividerColor)
-        return String(__unwrapped)
-      } else {
-        return nil
-      }
-    }()
-  }
-  
-  @inline(__always)
-  var buttonColor: String? {
-    return { () -> String? in
-      if bridge.has_value_std__optional_std__string_(self.__buttonColor) {
-        let __unwrapped = bridge.get_std__optional_std__string_(self.__buttonColor)
-        return String(__unwrapped)
-      } else {
-        return nil
-      }
-    }()
+  var style: PickerStyle? {
+    return self.__style.value
   }
   
   @inline(__always)

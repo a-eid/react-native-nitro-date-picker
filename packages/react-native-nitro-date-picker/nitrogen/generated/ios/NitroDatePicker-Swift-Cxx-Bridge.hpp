@@ -14,6 +14,8 @@ namespace margelo::nitro::nitrodatepicker { enum class DatePickerTheme; }
 namespace margelo::nitro::nitrodatepicker { enum class HourSource; }
 // Forward declaration of `HybridNitroDatePickerSpec` to properly resolve imports.
 namespace margelo::nitro::nitrodatepicker { class HybridNitroDatePickerSpec; }
+// Forward declaration of `PickerStyle` to properly resolve imports.
+namespace margelo::nitro::nitrodatepicker { struct PickerStyle; }
 
 // Forward declarations of Swift defined types
 // Forward declaration of `HybridNitroDatePickerSpec_cxx` to properly resolve imports.
@@ -23,6 +25,7 @@ namespace NitroDatePicker { class HybridNitroDatePickerSpec_cxx; }
 #include "DatePickerTheme.hpp"
 #include "HourSource.hpp"
 #include "HybridNitroDatePickerSpec.hpp"
+#include "PickerStyle.hpp"
 #include <NitroModules/Result.hpp>
 #include <exception>
 #include <functional>
@@ -78,6 +81,21 @@ namespace margelo::nitro::nitrodatepicker::bridge::swift {
     return optional.has_value();
   }
   inline DatePickerTheme get_std__optional_DatePickerTheme_(const std::optional<DatePickerTheme>& optional) noexcept {
+    return optional.value();
+  }
+  
+  // pragma MARK: std::optional<PickerStyle>
+  /**
+   * Specialized version of `std::optional<PickerStyle>`.
+   */
+  using std__optional_PickerStyle_ = std::optional<PickerStyle>;
+  inline std::optional<PickerStyle> create_std__optional_PickerStyle_(const PickerStyle& value) noexcept {
+    return std::optional<PickerStyle>(value);
+  }
+  inline bool has_value_std__optional_PickerStyle_(const std::optional<PickerStyle>& optional) noexcept {
+    return optional.has_value();
+  }
+  inline PickerStyle get_std__optional_PickerStyle_(const std::optional<PickerStyle>& optional) noexcept {
     return optional.value();
   }
   

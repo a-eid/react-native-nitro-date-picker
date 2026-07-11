@@ -16,6 +16,8 @@
 #include "JDatePickerMode.hpp"
 #include "JDatePickerTheme.hpp"
 #include "JHourSource.hpp"
+#include "JPickerStyle.hpp"
+#include "PickerStyle.hpp"
 #include <optional>
 #include <string>
 
@@ -54,12 +56,8 @@ namespace margelo::nitro::nitrodatepicker {
       jni::local_ref<jni::JDouble> timeZoneOffsetInMinutes = this->getFieldValue(fieldTimeZoneOffsetInMinutes);
       static const auto fieldTheme = clazz->getField<JDatePickerTheme>("theme");
       jni::local_ref<JDatePickerTheme> theme = this->getFieldValue(fieldTheme);
-      static const auto fieldTextColor = clazz->getField<jni::JString>("textColor");
-      jni::local_ref<jni::JString> textColor = this->getFieldValue(fieldTextColor);
-      static const auto fieldDividerColor = clazz->getField<jni::JString>("dividerColor");
-      jni::local_ref<jni::JString> dividerColor = this->getFieldValue(fieldDividerColor);
-      static const auto fieldButtonColor = clazz->getField<jni::JString>("buttonColor");
-      jni::local_ref<jni::JString> buttonColor = this->getFieldValue(fieldButtonColor);
+      static const auto fieldStyle = clazz->getField<JPickerStyle>("style");
+      jni::local_ref<JPickerStyle> style = this->getFieldValue(fieldStyle);
       static const auto fieldIs24HourSource = clazz->getField<JHourSource>("is24HourSource");
       jni::local_ref<JHourSource> is24HourSource = this->getFieldValue(fieldIs24HourSource);
       static const auto fieldConfirmText = clazz->getField<jni::JString>("confirmText");
@@ -77,9 +75,7 @@ namespace margelo::nitro::nitrodatepicker {
         minuteInterval,
         timeZoneOffsetInMinutes != nullptr ? std::make_optional(timeZoneOffsetInMinutes->value()) : std::nullopt,
         theme != nullptr ? std::make_optional(theme->toCpp()) : std::nullopt,
-        textColor != nullptr ? std::make_optional(textColor->toStdString()) : std::nullopt,
-        dividerColor != nullptr ? std::make_optional(dividerColor->toStdString()) : std::nullopt,
-        buttonColor != nullptr ? std::make_optional(buttonColor->toStdString()) : std::nullopt,
+        style != nullptr ? std::make_optional(style->toCpp()) : std::nullopt,
         is24HourSource != nullptr ? std::make_optional(is24HourSource->toCpp()) : std::nullopt,
         confirmText != nullptr ? std::make_optional(confirmText->toStdString()) : std::nullopt,
         cancelText != nullptr ? std::make_optional(cancelText->toStdString()) : std::nullopt,
@@ -93,7 +89,7 @@ namespace margelo::nitro::nitrodatepicker {
      */
     [[maybe_unused]]
     static jni::local_ref<JDatePickerConfig::javaobject> fromCpp(const DatePickerConfig& value) {
-      using JSignature = JDatePickerConfig(double, jni::alias_ref<JDatePickerMode>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JDouble>, jni::alias_ref<jni::JDouble>, double, jni::alias_ref<jni::JDouble>, jni::alias_ref<JDatePickerTheme>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, jni::alias_ref<JHourSource>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>);
+      using JSignature = JDatePickerConfig(double, jni::alias_ref<JDatePickerMode>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JDouble>, jni::alias_ref<jni::JDouble>, double, jni::alias_ref<jni::JDouble>, jni::alias_ref<JDatePickerTheme>, jni::alias_ref<JPickerStyle>, jni::alias_ref<JHourSource>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
@@ -106,9 +102,7 @@ namespace margelo::nitro::nitrodatepicker {
         value.minuteInterval,
         value.timeZoneOffsetInMinutes.has_value() ? jni::JDouble::valueOf(value.timeZoneOffsetInMinutes.value()) : nullptr,
         value.theme.has_value() ? JDatePickerTheme::fromCpp(value.theme.value()) : nullptr,
-        value.textColor.has_value() ? jni::make_jstring(value.textColor.value()) : nullptr,
-        value.dividerColor.has_value() ? jni::make_jstring(value.dividerColor.value()) : nullptr,
-        value.buttonColor.has_value() ? jni::make_jstring(value.buttonColor.value()) : nullptr,
+        value.style.has_value() ? JPickerStyle::fromCpp(value.style.value()) : nullptr,
         value.is24HourSource.has_value() ? JHourSource::fromCpp(value.is24HourSource.value()) : nullptr,
         value.confirmText.has_value() ? jni::make_jstring(value.confirmText.value()) : nullptr,
         value.cancelText.has_value() ? jni::make_jstring(value.cancelText.value()) : nullptr,

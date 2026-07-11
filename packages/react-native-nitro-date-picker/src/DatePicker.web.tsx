@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { DatePickerProps } from './DatePicker';
 
@@ -28,23 +28,38 @@ function fromInputValue(value: string, mode: Mode): Date | null {
   if (!value) return null;
   switch (mode) {
     case 'date': {
-      const [y, mo, d] = value.split('-').map(Number);
-      if (y == null || mo == null || d == null) return null;
+      const parts = value.split('-').map(Number);
+      const [y, mo, d] = parts;
+      if (y == null || mo == null || d == null || !Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) {
+        return null;
+      }
       return new Date(y, mo - 1, d);
     }
     case 'time': {
-      const [h, min] = value.split(':').map(Number);
-      if (h == null || min == null) return null;
+      const parts = value.split(':').map(Number);
+      const [h, min] = parts;
+      if (h == null || min == null || !Number.isFinite(h) || !Number.isFinite(min)) {
+        return null;
+      }
       const d = new Date();
       d.setHours(h, min, 0, 0);
       return d;
     }
     case 'datetime': {
-      return new Date(value);
+      const parsed = new Date(value);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
     }
   }
 }
 
+/**
+ * Web fallback for `<DatePicker>`.
+ *
+ * Renders the native `<input type="date|time|datetime-local">` inside a small modal. Because the
+ * native flow emits `onDateChange` continuously and then `onConfirm` with the final value, we keep
+ * a local copy of the in-progress date so `onConfirm` reports the value the user actually sees,
+ * not the stale `date` prop.
+ */
 export function DatePicker({
   open,
   date,
@@ -61,45 +76,41 @@ export function DatePicker({
   onCancel,
 }: DatePickerProps): React.JSX.Element | null {
   const inputRef = useRef<HTMLInputElement>(null);
-  const mountedRef = useRef(false);
+  // The live value as the user edits it. Re-seeded from `date` whenever the picker (re)opens.
+  const [liveDate, setLiveDate] = useState(date);
 
-  const inputType =
-    mode === 'datetime'
-      ? 'datetime-local'
-      : mode;
+  useEffect(() => {
+    if (open) setLiveDate(date);
+  }, [open, date]);
+
+  const inputType = mode === 'datetime' ? 'datetime-local' : mode;
 
   const handleChange = useCallback(
     (e: unknown) => {
       const event = e as { target: { value: string } };
       const parsed = fromInputValue(event.target.value, mode);
-      if (parsed) onDateChange?.(parsed);
+      if (parsed) {
+        setLiveDate(parsed);
+        onDateChange?.(parsed);
+      }
     },
     [mode, onDateChange]
   );
 
   const handleConfirm = useCallback(() => {
-    onConfirm?.(date);
-  }, [date, onConfirm]);
+    // Report the value the user is actually looking at, not the prop we opened with.
+    onConfirm?.(liveDate);
+  }, [liveDate, onConfirm]);
 
-  const setInputRef = useCallback(
-    (el: unknown) => {
-      (inputRef as { current: { focus?: () => void } | null }).current =
-        el as { focus?: () => void } | null;
-    },
-    []
-  );
-
+  // Esc key dismisses the modal, matching native back-button cancel behaviour.
   useEffect(() => {
-    if (open && !mountedRef.current) {
-      mountedRef.current = true;
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
-    }
-    if (!open) {
-      mountedRef.current = false;
-    }
-  }, [open]);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCancel?.();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onCancel]);
 
   if (!open) return null;
 
@@ -118,7 +129,7 @@ export function DatePicker({
 
   const inputProps: Record<string, unknown> = {
     type: inputType,
-    value: toInputValue(date, mode),
+    value: toInputValue(liveDate, mode),
     onChange: handleChange,
     style: inputStyle,
   };
@@ -128,9 +139,12 @@ export function DatePicker({
   if (mode === 'time') inputProps.step = minuteInterval * 60;
 
   return (
-    <Modal transparent visible={open} animationType="fade">
-      <View style={styles.overlay}>
-        <View style={[styles.container, isDark && styles.containerDark]}>
+    <Modal transparent visible={open} animationType="fade" onRequestClose={onCancel}>
+      <Pressable style={styles.overlay} onPress={onCancel}>
+        <Pressable
+          style={[styles.container, isDark && styles.containerDark]}
+          onPress={(e) => e.stopPropagation()}
+        >
           {title !== null && (
             <Text style={[styles.title, isDark && styles.titleDark]}>
               {title ?? (mode === 'time' ? 'Select time' : 'Select date')}
@@ -138,7 +152,7 @@ export function DatePicker({
           )}
 
           {/* @ts-ignore web-only input element */}
-          <input ref={setInputRef} {...inputProps} />
+          <input ref={inputRef} {...inputProps} />
 
           <View style={styles.buttonRow}>
             <Pressable
@@ -162,8 +176,8 @@ export function DatePicker({
               <Text style={styles.confirmButtonText}>{confirmText}</Text>
             </Pressable>
           </View>
-        </View>
-      </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   );
 }

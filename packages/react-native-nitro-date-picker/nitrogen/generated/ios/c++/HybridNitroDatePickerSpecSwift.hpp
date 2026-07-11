@@ -18,6 +18,8 @@ namespace margelo::nitro::nitrodatepicker { struct DatePickerConfig; }
 namespace margelo::nitro::nitrodatepicker { enum class DatePickerMode; }
 // Forward declaration of `DatePickerTheme` to properly resolve imports.
 namespace margelo::nitro::nitrodatepicker { enum class DatePickerTheme; }
+// Forward declaration of `PickerStyle` to properly resolve imports.
+namespace margelo::nitro::nitrodatepicker { struct PickerStyle; }
 // Forward declaration of `HourSource` to properly resolve imports.
 namespace margelo::nitro::nitrodatepicker { enum class HourSource; }
 
@@ -27,6 +29,7 @@ namespace margelo::nitro::nitrodatepicker { enum class HourSource; }
 #include "DatePickerMode.hpp"
 #include <string>
 #include "DatePickerTheme.hpp"
+#include "PickerStyle.hpp"
 #include "HourSource.hpp"
 
 #include "NitroDatePicker-Swift-Cxx-Umbrella.hpp"
