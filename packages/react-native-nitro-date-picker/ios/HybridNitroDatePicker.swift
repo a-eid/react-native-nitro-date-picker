@@ -45,9 +45,11 @@ class HybridNitroDatePicker: HybridNitroDatePickerSpec {
     pickerViewController.view = picker
     pickerViewController.preferredContentSize = pickerSize(for: config)
 
-    // Apply a resolved background color behind the wheels (style.backgroundColor ?? theme default).
-    if let bgColor = effectiveBackgroundColor(config) {
-      pickerViewController.view.backgroundColor = bgColor
+    // Only apply a custom background when the user explicitly sets style.backgroundColor.
+    // For light/dark/auto themes we let the system (via overrideUserInterfaceStyle) handle all
+    // colors — forcing a hardcoded fill on top of the system chrome causes mismatched shades.
+    if let style = config.style, let hex = style.backgroundColor, let color = UIColor(hex: hex) {
+      pickerViewController.view.backgroundColor = color
     }
 
     alert.setValue(pickerViewController, forKey: "contentViewController")
@@ -148,19 +150,6 @@ class HybridNitroDatePicker: HybridNitroDatePickerSpec {
     case .light: return "#000000"
     case .dark: return "#ffffff"
     // .auto / unset: let UIDatePicker follow the system; no KVC override.
-    default: return nil
-    }
-  }
-
-  /// Background color behind the wheels: `style.backgroundColor` ?? theme default. Returns nil for
-  /// `.auto` with no override (lets the system decide).
-  private func effectiveBackgroundColor(_ config: DatePickerConfig) -> UIColor? {
-    if let style = config.style, let hex = style.backgroundColor, let color = UIColor(hex: hex) {
-      return color
-    }
-    switch config.theme {
-    case .light: return UIColor.white
-    case .dark: return UIColor(hex: "#1c1c1e")
     default: return nil
     }
   }
