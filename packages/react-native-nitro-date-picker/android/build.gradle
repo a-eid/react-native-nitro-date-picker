@@ -138,5 +138,12 @@ dependencies {
 
   // Add a dependency on NitroModules
   implementation project(":react-native-nitro-modules")
+
+  // Spinner wheel widgets (year/month/day/hour/minute/am-pm). The published
+  // artifact (io.github.ShawnLin013:number-picker:2.4.13) has not been updated since 2021, but it
+  // is pure Java and consumes cleanly under compileSdk 36 / Kotlin 2.1.x. The wheel logic is
+  // isolated behind the `Wheel` base class so the widget can be swapped for a stock
+  // android.widget.NumberPicker subclass without touching call sites if this ever breaks.
+  implementation "io.github.ShawnLin013:number-picker:2.4.13"
 }
 

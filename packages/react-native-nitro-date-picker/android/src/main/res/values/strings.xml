@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Accessibility content descriptions for each wheel. -->
+    <string name="ndp_year_description">Select Year</string>
+    <string name="ndp_month_description">Select Month</string>
+    <string name="ndp_date_description">Select Date</string>
+    <string name="ndp_day_description">Select Day</string>
+    <string name="ndp_hour_description">Select Hour</string>
+    <string name="ndp_minutes_description">Select Minutes</string>
+    <string name="ndp_ampm_description">Select AM/PM</string>
+
+    <!-- "Today" label for the day wheel. Overridden at runtime with the device-locale word
+         for "today" when one can be resolved, falling back to this string otherwise. -->
+    <string name="ndp_today">Today</string>
+
+    <!-- Default dialog button text. -->
+    <string name="ndp_confirm">Confirm</string>
+    <string name="ndp_cancel">Cancel</string>
+</resources>

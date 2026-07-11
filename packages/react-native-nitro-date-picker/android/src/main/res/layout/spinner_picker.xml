@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Horizontal row of spinner wheels. Visibility and order are driven programmatically
+  (see PickerWheels.kt) based on `mode` and the locale's datetime pattern, mirroring
+  henninghall/react-native-date-picker. All seven wheel types are declared here; those
+  not relevant for the current mode are set to GONE at runtime.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/picker_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="180dp"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layoutDirection="locale">
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/year"
+        style="@style/SpinnerWheel"
+        android:tag="year" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/month"
+        style="@style/SpinnerWheel"
+        android:tag="month" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/date"
+        style="@style/SpinnerWheel.Small"
+        android:tag="date" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/day"
+        style="@style/SpinnerWheel"
+        android:tag="day" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/hour"
+        style="@style/SpinnerWheel.Small"
+        android:tag="hour" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/minutes"
+        style="@style/SpinnerWheel.Small"
+        android:tag="minutes" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/ampm"
+        style="@style/SpinnerWheel"
+        android:tag="ampm" />
+
+</LinearLayout>

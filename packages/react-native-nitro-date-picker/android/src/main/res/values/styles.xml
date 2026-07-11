@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base theme applied to every spinner wheel. Consumers can override `SpinnerWheel`
+         in their own app theme to restyle all wheels globally.
+
+         Spacing notes (ShawnLin NumberPicker 2.4.13):
+           - Row pitch is *derived* from view height / wheelItemCount / text sizes; it is not set
+             directly. np_lineSpacingMultiplier only affects multi-line labels, so it's omitted.
+           - np_itemSpacing is the additive gap that pushes the non-selected rows away from the
+             focused row — this is what widens the spacing "outside the focused lines".
+           - np_dividerDistance positions the two selection divider lines; lowering it from the
+             48dp default makes them bracket the selected text instead of floating far apart.
+         -->
+    <style name="SpinnerWheel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">180dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:descendantFocusability">blocksDescendants</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <!-- ShawnLin NumberPicker attributes -->
+        <item name="np_wheelItemCount">5</item>
+        <item name="np_textSize">17sp</item>
+        <item name="np_selectedTextSize">17sp</item>
+        <!-- Additive vertical gap between the focused row and its neighbours. -->
+        <item name="np_itemSpacing">6dp</item>
+        <!-- Gap between the two selection lines. This is the only knob that creates vertical
+             padding around the selected text (itemSpacing only affects non-selected rows). -->
+        <item name="np_dividerDistance">40dp</item>
+        <item name="np_dividerThickness">1dp</item>
+        <item name="np_fadingEdgeEnabled">true</item>
+        <item name="np_fadingEdgeStrength">0.6</item>
+    </style>
+
+    <!-- Narrower variant for numeric wheels (date of month, hour, minute). -->
+    <style name="SpinnerWheel.Small">
+        <item name="android:layout_width">40dp</item>
+    </style>
+
+</resources>
+
