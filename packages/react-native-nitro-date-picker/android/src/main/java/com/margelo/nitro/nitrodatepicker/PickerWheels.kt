@@ -49,15 +49,12 @@ class PickerWheels(
     private lateinit var minutesWheel: MinutesWheel
     private lateinit var amPmWheel: AmPmWheel
 
-    private val byType: Map<WheelType, Wheel> get() = mapOf(
-        WheelType.YEAR to yearWheel,
-        WheelType.MONTH to monthWheel,
-        WheelType.DATE to dateWheel,
-        WheelType.DAY to dayWheel,
-        WheelType.HOUR to hourWheel,
-        WheelType.MINUTE to minutesWheel,
-        WheelType.AM_PM to amPmWheel,
-    )
+    /**
+     * All seven wheels keyed by type. Allocated once in [build]; every consumer runs after build,
+     * so a stored map (rebuilt only on re-show) beats the per-call allocation a `get()` would do —
+     * `parseWheels` alone read this up to ~12 times per wheel settle.
+     */
+    private lateinit var byType: Map<WheelType, Wheel>
 
     /** Tracks whether any wheel is mid-scroll, to avoid emitting half-spun dates. */
     private var spinning = false
@@ -83,9 +80,33 @@ class PickerWheels(
         minutesWheel = MinutesWheel(find(R.id.minutes), state)
         amPmWheel = AmPmWheel(find(R.id.ampm), state)
 
+        // Build the key→wheel map once. LinkedHashMap to match the previous declaration order
+        // (iteration order is observable in reorderWheels / apply*).
+        byType = linkedMapOf(
+            WheelType.YEAR to yearWheel,
+            WheelType.MONTH to monthWheel,
+            WheelType.DATE to dateWheel,
+            WheelType.DAY to dayWheel,
+            WheelType.HOUR to hourWheel,
+            WheelType.MINUTE to minutesWheel,
+            WheelType.AM_PM to amPmWheel,
+        )
+
         byType.values.forEach { wheel ->
             wheel.init()
             wheel.updateVisibility()
+        }
+
+        // Resolve the parse-time invariants once: visible-wheel order, master pattern, and the
+        // reusable master formatter. All depend only on the (immutable) state + the wheel patterns,
+        // so caching them turns parseWheels() from "build N formatters" into "set lenient + parse".
+        orderedVisibleWheels = state.getOrderedVisibleWheels()
+        masterPattern = orderedVisibleWheels
+            .joinToString(" ") { byType[it]!!.getFormatPattern() }
+            .replace(wsCollapseRegex, " ")
+            .trim()
+        masterFormat = SimpleDateFormat(masterPattern, state.getLocale()).apply {
+            timeZone = state.getTimeZone()
         }
 
         reorderWheels()
@@ -148,8 +169,10 @@ class PickerWheels(
     private fun reorderWheels() {
         // Detach every wheel, then re-add the visible ones in locale order so the LinearLayout lays
         // them out left-to-right correctly. (Invisible wheels stay detached.)
-        (0 until pickerWrapper.childCount).toList().forEach { pickerWrapper.getChildAt(0)?.let { pickerWrapper.removeView(it) } }
-        state.getOrderedVisibleWheels().forEach { type ->
+        while (pickerWrapper.childCount > 0) {
+            pickerWrapper.removeViewAt(0)
+        }
+        orderedVisibleWheels.forEach { type ->
             byType[type]?.picker?.let { picker ->
                 val parent = picker.parent as? LinearLayout
                 parent?.removeView(picker)
@@ -221,20 +244,26 @@ class PickerWheels(
     // Value round-trip
     // ------------------------------------------------------------------
 
-    /** The combined master pattern covering every visible wheel, in display order. */
-    private val masterPattern: String by lazy {
-        // AM/PM wheel pattern is " a " (padded); collapse internal whitespace so the joined pattern
-        // and the joined value line up token-for-token during parse.
-        state.getOrderedVisibleWheels()
-            .joinToString(" ") { byType[it]!!.getFormatPattern() }
-            .replace(Regex("\\s+"), " ")
-            .trim()
-    }
+    /**
+     * Wheels in left-to-right display order, captured once at build. [DatePickerState] is immutable
+     * for the life of this [PickerWheels], so re-resolving on every parse (the previous behaviour)
+     * was pure waste — [parseWheels] runs up to ~12× per wheel settle.
+     */
+    private lateinit var orderedVisibleWheels: List<WheelType>
 
-    private fun masterFormat(): SimpleDateFormat =
-        SimpleDateFormat(masterPattern, state.getLocale()).apply {
-            timeZone = state.getTimeZone()
-        }
+    /** The combined master pattern covering every visible wheel, in display order. */
+    private lateinit var masterPattern: String
+
+    /**
+     * Reusable master formatter. [SimpleDateFormat] is not thread-safe, but every access here is on
+     * the UI thread (wheel listeners), so a single shared instance is both safe and avoids the
+     * per-parse construction cost (pattern compile + locale lookup) it was paying before.
+     * `isLenient` is toggled per-call by [parseWheels].
+     */
+    private lateinit var masterFormat: SimpleDateFormat
+
+    /** Precompiled; used to collapse inter-token whitespace in both the pattern and the joined value. */
+    private val wsCollapseRegex = Regex("\\s+")
 
     /**
      * Parse the wheels' current values (with [dayOffset] applied to the DAY wheel, 0 = today) into a
@@ -242,16 +271,17 @@ class PickerWheels(
      * controls whether Apr 31 etc. are accepted.
      */
     private fun parseWheels(dayOffset: Int = 0, lenient: Boolean = false): Calendar? {
-        val combined = state.getOrderedVisibleWheels().joinToString(" ") { type ->
+        // joinToString already inserts " " between tokens; the only extra whitespace that can appear
+        // is inside the AM/PM pattern/value (" a " / " AM "), so a single replace normalises it.
+        val combined = orderedVisibleWheels.joinToString(" ") { type ->
             // Only the DAY wheel is shifted; other wheels keep their current value. Matches
             // henninghall's getDateTimeString(daysToSubtract).
-            val raw = if (type == WheelType.DAY) byType[type]!!.getPastValue(dayOffset) else byType[type]!!.getValue()
-            raw
-        }.replace(Regex("\\s+"), " ").trim()
+            if (type == WheelType.DAY) byType[type]!!.getPastValue(dayOffset) else byType[type]!!.getValue()
+        }.replace(wsCollapseRegex, " ").trim()
 
-        val format = masterFormat().apply { isLenient = lenient }
+        masterFormat.isLenient = lenient
         val parsed = try {
-            format.parse(combined) ?: return null
+            masterFormat.parse(combined) ?: return null
         } catch (e: ParseException) {
             return null
         }

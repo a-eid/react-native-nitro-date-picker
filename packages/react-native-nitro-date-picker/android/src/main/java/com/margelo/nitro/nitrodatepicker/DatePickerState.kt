@@ -36,8 +36,16 @@ class DatePickerState(config: DatePickerConfig) {
     fun getMinimumDate(): Calendar? = minimumDate
     fun getMaximumDate(): Calendar? = maximumDate
 
-    /** The set of wheels that should be visible for the current mode + AM/PM decision. */
-    fun getVisibleWheels(): Set<WheelType> {
+    /**
+     * The set of wheels that should be visible for the current mode + AM/PM decision. Computed once
+     * (the inputs are immutable for this state's lifetime) and cached — it's read on every wheel
+     * settle via `getOrderedVisibleWheels`.
+     */
+    private val visibleWheels: Set<WheelType> by lazy { computeVisibleWheels() }
+
+    fun getVisibleWheels(): Set<WheelType> = visibleWheels
+
+    private fun computeVisibleWheels(): Set<WheelType> {
         val visible = LinkedHashSet<WheelType>()
         when (mode) {
             DatePickerMode.DATETIME -> {
@@ -74,9 +82,12 @@ class DatePickerState(config: DatePickerConfig) {
         }
     }
 
-    /** Visible wheels ordered for the current locale (left → right). */
-    fun getOrderedVisibleWheels(): List<WheelType> =
-        WheelOrder.orderedVisible(locale, getVisibleWheels())
+    /** Visible wheels ordered for the current locale (left → right). Computed once and cached. */
+    private val orderedVisibleWheels: List<WheelType> by lazy {
+        WheelOrder.orderedVisible(locale, visibleWheels)
+    }
+
+    fun getOrderedVisibleWheels(): List<WheelType> = orderedVisibleWheels
 
     private fun resolveTimeZone(offsetInMinutes: Double?): TimeZone {
         // null → device timezone; otherwise a fixed GMT offset expressed in minutes east of UTC.

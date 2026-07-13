@@ -16,6 +16,13 @@ import java.util.Locale
  */
 object WheelOrder {
 
+    // Precompiled patterns used to strip quoted literals from the ICU datetime pattern. These run
+    // once per show(), so the saving is small, but compiling them once is strictly better than
+    // re-compiling on every call.
+    private val parensQuoted = Regex("\\('(.+?)'\\)")
+    private val quotedLiteral = Regex("'.+?'")
+    private val placeholderOut = Regex("\\$\\{(.+?)\\}")
+
     /**
      * @param locale the active locale (drives ordering)
      * @param visibleWheels the set of wheels that are visible for the current mode
@@ -31,9 +38,9 @@ object WheelOrder {
         // don't get mistaken for pattern chars. We temporarily replace their contents, then drop
         // them — same trick henninghall uses.
         val pattern = LocaleSupport.getDateTimePattern(locale)
-            .replace(Regex("\\('(.+?)'\\)"), "\${$1}")
-            .replace(Regex("'.+?'"), "")
-            .replace(Regex("\\$\\{(.+?)\\}"), "('$1')")
+            .replace(parensQuoted, "\${$1}")
+            .replace(quotedLiteral, "")
+            .replace(placeholderOut, "('$1')")
 
         val unordered = enumValues<WheelType>().toMutableList()
         val ordered = mutableListOf<WheelType>()

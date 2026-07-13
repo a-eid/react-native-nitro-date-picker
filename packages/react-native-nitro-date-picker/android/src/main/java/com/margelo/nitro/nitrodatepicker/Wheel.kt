@@ -24,6 +24,17 @@ abstract class Wheel(
     /** Raw (un-displayed) values, one per wheel index. Populated by [init]. */
     private val values: ArrayList<String> = ArrayList()
 
+    /**
+     * `value → index` over [values], built in [init]. Turns [getIndexOfDate] from an O(n) linear
+     * scan into an O(1) lookup. This matters most for [wheels.DayWheel] (n up to ~365) and for
+     * [wheels.YearWheel] (n up to ~200): `setValue` runs for every wheel on every
+     * `syncWheelsToDate`, including the up-to-10-iteration "nearest valid past date" walk.
+     *
+     * Duplicate values would collide; concrete wheels generate unique formatted strings per index
+     * (a date component formatted with a fixed pattern), so this is safe in practice.
+     */
+    private val valueToIndex: HashMap<String, Int> = HashMap()
+
     /** Count of values currently in the wheel's index space. */
     val valuesSize: Int get() = values.size
 
@@ -69,6 +80,10 @@ abstract class Wheel(
     fun init() {
         values.clear()
         values.addAll(getValues())
+
+        valueToIndex.clear()
+        valueToIndex.ensureCapacity(values.size)
+        for (i in values.indices) valueToIndex[values[i]] = i
 
         // NumberPicker requires minValue/maxValue to be set before displayed values, and maxValue
         // must equal values.size - 1 after the call.
@@ -136,7 +151,7 @@ abstract class Wheel(
 
     private fun getIndexOfDate(date: Calendar): Int {
         formatter.timeZone = state.getTimeZone()
-        return values.indexOf(formatter.format(date.time))
+        return valueToIndex[formatter.format(date.time)] ?: -1
     }
 
     /* ------------------------------------------------------------------ */

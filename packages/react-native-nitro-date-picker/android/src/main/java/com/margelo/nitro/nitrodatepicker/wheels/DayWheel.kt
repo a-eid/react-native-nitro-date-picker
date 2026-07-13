@@ -54,21 +54,26 @@ class DayWheel(
         val displayFormat = SimpleDateFormat(displayPattern, state.getLocale())
         displayFormat.timeZone = state.getTimeZone()
 
-        val cal = (getStartCal().clone() as Calendar)
-        val end = getEndCal()
+        // Truncate the cursor and the terminator to start-of-day once, up front. The formatted
+        // values ("EEE MMM d" and the medium-date pattern) and DateUtils.isToday() only depend on
+        // the date fields, so dropping the time-of-day is output-preserving, and it lets the loop
+        // compare the cursor against `end` directly — the previous version cloned the cursor on
+        // every iteration (up to ~365×) just for this terminator check.
+        val cal = truncateToStartOfDay(getStartCal())
+        val end = truncateToStartOfDay(getEndCal())
         do {
             val raw = format(cal)
             rawValues.add(raw)
             displayValues[raw] = displayFormat.format(cal.time)
             if (android.text.format.DateUtils.isToday(cal.time.time)) todayValue = raw
             cal.add(Calendar.DATE, 1)
-        } while (!startOfDay(cal).after(end))
+        } while (!cal.after(end))
 
         return rawValues
     }
 
-    /** Truncates [cal] to 00:00:00.000 so the day-window loop terminates on a clean boundary. */
-    private fun startOfDay(cal: Calendar): Calendar = (cal.clone() as Calendar).apply {
+    /** Truncates [cal] (in place) to 00:00:00.000. */
+    private fun truncateToStartOfDay(cal: Calendar): Calendar = cal.apply {
         set(Calendar.HOUR_OF_DAY, 0)
         set(Calendar.MINUTE, 0)
         set(Calendar.SECOND, 0)
